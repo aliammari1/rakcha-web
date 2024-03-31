@@ -15,10 +15,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategorieProduitController extends AbstractController
 {
     #[Route('/', name: 'app_categorie_produit_index', methods: ['GET'])]
-    public function index(CategorieProduitRepository $categorieProduitRepository): Response
+    public function index(CategorieProduitRepository $categorieproduitRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('categorie_produit/index.html.twig', [
-            'categorie_produits' => $categorieProduitRepository->findAll(),
+        $form = $this->createForm(CategorieProduitType::class, new CategorieProduit());
+        $updateForms = array();
+        for ($i = 0; $i < count($categorieproduitRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(CategorieProduitType::class, $categorieproduitRepository->findAll()[$i])->createView();
+        }
+        return $this->render('categorie_produit/tables.html.twig', [
+            'categorieproduit' =>$categorieproduitRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 
