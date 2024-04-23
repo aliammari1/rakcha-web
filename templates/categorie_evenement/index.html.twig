@@ -1,37 +1,36 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseFront.html.twig' %}
 
-{% block title %}CategorieEvenement index{% endblock %}
+{% block pageStyle %}
+    <link href="{{ asset('css/index.css') }}" rel="stylesheet">
+{% endblock  %}
+{% block title %}Category Event{% endblock %}
 
 {% block body %}
-    <h1>CategorieEvenement index</h1>
+    
+<body>
+        {{ block("header") }}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>NomCategorie</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for categorie_evenement in categorie_evenements %}
-            <tr>
-                <td>{{ categorie_evenement.id }}</td>
-                <td>{{ categorie_evenement.nomCategorie }}</td>
-                <td>{{ categorie_evenement.description }}</td>
-                <td>
-                    <a href="{{ path('app_categorie_evenement_show', {'id': categorie_evenement.id}) }}">show</a>
-                    <a href="{{ path('app_categorie_evenement_edit', {'id': categorie_evenement.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-list-alt text-primary mr-2"></i>CategorieEvenement </h1>
 
-    <a href="{{ path('app_categorie_evenement_new') }}">Create new</a>
+        <div style="color: black;" class="row">
+            {% for categorie_evenement in categorie_evenements %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <i style="color: black;" class="fas fa-tag"></i> {{ categorie_evenement.nomCategorie }}
+                        </div>
+                        <div class="card-body">
+                            <p style="color: black;"><strong>Description:</strong> {{ categorie_evenement.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p>No records found</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
 {% endblock %}

@@ -2,106 +2,62 @@
 
 namespace App\Entity;
 
-use App\Repository\CommandeRepository;
-use DateTime;
-use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-
-#[ORM\Entity(repositoryClass: CommandeRepository::class)]
-#[ORM\Table(name: 'commande')]
-#[ORM\Index(name: 'fk_idClient', columns: ['idClient'])]
+/**
+ * Commande
+ *
+ * @ORM\Table(name="commande", indexes={@ORM\Index(name="fk_idClient", columns={"idClient"})})
+ * @ORM\Entity
+ */
 class Commande
 {
-    #[ORM\Column(name: 'idCommande', type: 'integer', nullable: false)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $idcommande;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="idCommande", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idcommande;
 
     /**
-     * @var DateTime
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateCommande", type="date", nullable=false)
      */
-    #[ORM\Column(name: 'dateCommande', type: 'date', nullable: false)]
-    private DateTimeInterface $datecommande;
+    private $datecommande;
 
-    #[ORM\Column(name: 'statu', type: 'string', length: 50, nullable: false, options: ['default' => 'En cours'])]
-    private string $statu = 'En cours';
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="statu", type="string", length=50, nullable=false, options={"default"="En cours"})
+     */
+    private $statu = 'En cours';
 
-    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
-    private int $numTelephone;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="num_telephone", type="integer", nullable=false)
+     */
+    private $numTelephone;
 
-    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: false)]
-    private string $adresse;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="adresse", type="string", length=50, nullable=false)
+     */
+    private $adresse;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
-    private ?Users $idclient = null;
-
-    public function getIdcommande(): ?int
-    {
-        return $this->idcommande;
-    }
-
-    public function getDatecommande(): ?\DateTimeInterface
-    {
-        return $this->datecommande;
-    }
-
-    public function setDatecommande(\DateTimeInterface $datecommande): static
-    {
-        $this->datecommande = $datecommande;
-
-        return $this;
-    }
-
-    public function getStatu(): ?string
-    {
-        return $this->statu;
-    }
-
-    public function setStatu(string $statu): static
-    {
-        $this->statu = $statu;
-
-        return $this;
-    }
-
-    public function getNumTelephone(): ?int
-    {
-        return $this->numTelephone;
-    }
-
-    public function setNumTelephone(int $numTelephone): static
-    {
-        $this->numTelephone = $numTelephone;
-
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): static
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getIdclient(): ?Users
-    {
-        return $this->idclient;
-    }
-
-    public function setIdclient(?Users $idclient): static
-    {
-        $this->idclient = $idclient;
-
-        return $this;
-    }
+    /**
+     * @var \Users
+     *
+     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="idClient", referencedColumnName="id")
+     * })
+     */
+    private $idclient;
 
 
 }

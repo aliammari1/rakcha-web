@@ -2,154 +2,293 @@
 
 namespace App\Entity;
 
-use App\Repository\EvenementRepository;
-use DateTime;
-use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
-
-#[ORM\Entity(repositoryClass: EvenementRepository::class)]
-#[ORM\Table(name: 'evenement')]
-#[ORM\Index(name: 'cle_secondaire', columns: ['id_categorie'])]
+use Symfony\Component\Validator\Constraints as Assert;
+/**
+ * Evenement
+ *
+ * @ORM\Table(name="evenement", indexes={@ORM\Index(name="cle_secondaire", columns={"id_categorie"})})
+ * @ORM\Entity
+ */
 class Evenement
 {
-    #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $id;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="ID", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(name: 'nom', type: 'string', length: 500, nullable: false)]
-    private string $nom;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=500, nullable=false)
+     * @Assert\NotBlank(message="Le nom ne peut pas être vide")
+     * @Assert\Length(max=500, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
+       * @Assert\Regex(
+ *     pattern="/^[a-zA-Z]+$/",
+ *     message="Le nom ne peut contenir que des lettres"
+ * )
+     */
+    private $nom;
 
     /**
-     * @var DateTime
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateDebut", type="date", nullable=false)
      */
-    #[ORM\Column(name: 'dateDebut', type: 'date', nullable: false)]
-    private DateTimeInterface $datedebut;
+    private $datedebut;
 
     /**
-     * @var DateTime
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateFin", type="date", nullable=false)
      */
-    #[ORM\Column(name: 'dateFin', type: 'date', nullable: false)]
-    private DateTimeInterface $datefin;
+    private $datefin;
 
-    #[ORM\Column(name: 'lieu', type: 'string', length: 500, nullable: false)]
-    private string $lieu;
+    /**
+     * @var string
+      * @Assert\NotBlank(message="Le lieu ne peut pas être vide")
+     * @Assert\Length(max=500, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
+      * @Assert\Regex(
+ *     pattern="/^[a-zA-Z]+$/",
+ *     message="Le lieu ne peut contenir que des lettres"
+ * )
+     * @ORM\Column(name="lieu", type="string", length=500, nullable=false)
+     */
+    private $lieu;
 
-    #[ORM\Column(name: 'etat', type: 'string', length: 500, nullable: false)]
-    private string $etat;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etat", type="string", length=500, nullable=false)
+     */
+    private $etat;
 
-    #[ORM\Column(name: 'description', type: 'string', length: 500, nullable: false)]
-    private string $description;
+    /**
+     * @var string
+      * @Assert\NotBlank(message="Le description ne peut pas être vide")
+     * @Assert\Length(max=500, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
+     * @ORM\Column(name="description", type="string", length=500, nullable=false)
+      * @Assert\Regex(
+ *     pattern="/^[a-zA-Z]+$/",
+ *     message="Le description ne peut contenir que des lettres"
+ * )
+     */
+    private $description;
 
-    #[ORM\Column(name: 'affiche_event', type: 'string', length: 255, nullable: false)]
-    private string $afficheEvent;
+    /**
+     * @var string
+      * @Assert\NotBlank(message="Le affiche event ne peut pas être vide")
+     * @Assert\Length(max=10, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
+     * @ORM\Column(name="affiche_event", type="string", length=255, nullable=false)
+     */
+    private $afficheEvent;
 
-    #[ORM\ManyToOne(targetEntity: CategorieEvenement::class)]
-    #[ORM\JoinColumn(name: 'id_categorie', referencedColumnName: 'ID')]
-    private ?CategorieEvenement $idCategorie = null;
+    /**
+     * @var \CategorieEvenement
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieEvenement")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_categorie", referencedColumnName="ID")
+     * })
+     */
+    private $idCategorie;
 
+    /**
+     * Get the value of id
+     *
+     * @return int
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Get the value of nom
+     *
+     * @return string
+     */
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    /**
+     * Set the value of nom
+     *
+     * @param string $nom
+     * @return self
+     */
+    public function setNom(string $nom): self
     {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getDatedebut(): ?\DateTimeInterface
+    /**
+     * Get the value of datedebut
+     *
+     * @return \DateTime
+     */
+    public function getDatedebut(): ?\DateTime
     {
         return $this->datedebut;
     }
 
-    public function setDatedebut(\DateTimeInterface $datedebut): static
+    /**
+     * Set the value of datedebut
+     *
+     * @param \DateTime $datedebut
+     * @return self
+     */
+    public function setDatedebut(\DateTime $datedebut): self
     {
         $this->datedebut = $datedebut;
 
         return $this;
     }
 
-    public function getDatefin(): ?\DateTimeInterface
+    /**
+     * Get the value of datefin
+     *
+     * @return \DateTime
+     */
+    public function getDatefin(): ?\DateTime
     {
         return $this->datefin;
     }
 
-    public function setDatefin(\DateTimeInterface $datefin): static
+    /**
+     * Set the value of datefin
+     *
+     * @param \DateTime $datefin
+     * @return self
+     */
+    public function setDatefin(\DateTime $datefin): self
     {
         $this->datefin = $datefin;
 
         return $this;
     }
 
+    /**
+     * Get the value of lieu
+     *
+     * @return string
+     */
     public function getLieu(): ?string
     {
         return $this->lieu;
     }
 
-    public function setLieu(string $lieu): static
+    /**
+     * Set the value of lieu
+     *
+     * @param string $lieu
+     * @return self
+     */
+    public function setLieu(string $lieu): self
     {
         $this->lieu = $lieu;
 
         return $this;
     }
 
+    /**
+     * Get the value of etat
+     *
+     * @return string
+     */
     public function getEtat(): ?string
     {
         return $this->etat;
     }
 
-    public function setEtat(string $etat): static
+    /**
+     * Set the value of etat
+     *
+     * @param string $etat
+     * @return self
+     */
+    public function setEtat(string $etat): self
     {
         $this->etat = $etat;
 
         return $this;
     }
 
+    /**
+     * Get the value of description
+     *
+     * @return string
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    /**
+     * Set the value of description
+     *
+     * @param string $description
+     * @return self
+     */
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
+    /**
+     * Get the value of afficheEvent
+     *
+     * @return string
+     */
     public function getAfficheEvent(): ?string
     {
         return $this->afficheEvent;
     }
 
-    public function setAfficheEvent(string $afficheEvent): static
+    /**
+     * Set the value of afficheEvent
+     *
+     * @param string $afficheEvent
+     * @return self
+     */
+    public function setAfficheEvent(string $afficheEvent): self
     {
         $this->afficheEvent = $afficheEvent;
 
         return $this;
     }
 
+    /**
+     * Get the value of idCategorie
+     *
+     * @return \CategorieEvenement
+     */
     public function getIdCategorie(): ?CategorieEvenement
     {
         return $this->idCategorie;
     }
 
-    public function setIdCategorie(?CategorieEvenement $idCategorie): static
+    /**
+     * Set the value of idCategorie
+     *
+     * @param \CategorieEvenement $idCategorie
+     * @return self
+     */
+    public function setIdCategorie(?CategorieEvenement $idCategorie): self
     {
         $this->idCategorie = $idCategorie;
 
         return $this;
     }
-
-
 }

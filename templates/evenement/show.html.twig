@@ -1,50 +1,61 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseBack.html.twig' %}
 
 {% block title %}Evenement{% endblock %}
 
 {% block body %}
-    <h1>Evenement</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Evenement Details</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ evenement.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ evenement.nom }}</td>
-            </tr>
-            <tr>
-                <th>Datedebut</th>
-                <td>{{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Datefin</th>
-                <td>{{ evenement.datefin ? evenement.datefin|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Lieu</th>
-                <td>{{ evenement.lieu }}</td>
-            </tr>
-            <tr>
-                <th>Etat</th>
-                <td>{{ evenement.etat }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ evenement.description }}</td>
-            </tr>
-            <tr>
-                <th>AfficheEvent</th>
-                <td>{{ evenement.afficheEvent }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <table class="table table-bordered table-hover table-primary">
+                    <tbody>
+                        <tr>
+                            <th class="bg-primary text-white">Id</th>
+                            <td>{{ evenement.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Nom</th>
+                            <td>{{ evenement.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Date Debut</th>
+                            <td>{{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Date Fin</th>
+                            <td>{{ evenement.datefin ? evenement.datefin|date('Y-m-d') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Lieu</th>
+                            <td>{{ evenement.lieu }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Etat</th>
+                            <td>{{ evenement.etat }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Description</th>
+                            <td>{{ evenement.description }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary text-white">Affiche Event</th>
+                            <td><img width="50" height="50" src="{{ evenement.afficheEvent}}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <a href="{{ path('app_evenement_index') }}">back to list</a>
+        <div class="mt-4">
+            <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to List
+            </a>
+            <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-outline-success ml-2">
+                <i class="fas fa-edit mr-2"></i>Edit
+            </a>
+        </div>
 
-    <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}">edit</a>
-
-    {{ include('evenement/_delete_form.html.twig') }}
+        {{ include('evenement/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

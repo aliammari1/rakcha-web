@@ -2,273 +2,125 @@
 
 namespace App\Entity;
 
-use App\Repository\UsersRepository;
-use DateTime;
-use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UsersRepository::class)]
-#[ORM\Table(name: 'users')]
+/**
+ * Users
+ *
+ * @ORM\Table(name="users")
+ * @ORM\Entity
+ */
 class Users
 {
-    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $id;
-
-    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
-    private string $nom;
-
-    #[ORM\Column(name: 'prenom', type: 'string', length: 50, nullable: false)]
-    private string $prenom;
-
-    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
-    private int $numTelephone;
-
-    #[ORM\Column(name: 'password', type: 'string', length: 50, nullable: false)]
-    private string $password;
-
-    #[ORM\Column(name: 'role', type: 'string', length: 50, nullable: false)]
-    private string $role;
-
-    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
-    private ?string $adresse = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
     /**
-     * @var DateTime|null
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=50, nullable=false)
      */
-    #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
-    private ?DateTimeInterface $dateDeNaissance = null;
-
-    #[ORM\Column(name: 'email', type: 'string', length: 50, nullable: false)]
-    private string $email;
-
-    #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255, nullable: true)]
-    private ?string $photoDeProfil = null;
+    private $nom;
 
     /**
-     * @var Collection<int, Cinema>
+     * @var string
+     *
+     * @ORM\Column(name="prenom", type="string", length=50, nullable=false)
      */
-    #[ORM\ManyToMany(targetEntity: Cinema::class, mappedBy: 'idUser')]
-    private Collection $idCinema;
+    private $prenom;
 
     /**
-     * @var Collection<int, Seance>
+     * @var int
+     *
+     * @ORM\Column(name="num_telephone", type="integer", nullable=false)
      */
-    #[ORM\JoinTable(name: 'ticket')]
-    #[ORM\JoinColumn(name: 'id_user', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(name: 'id_seance', referencedColumnName: 'id_seance')]
-    #[ORM\ManyToMany(targetEntity: Seance::class, inversedBy: 'idUser')]
-    private Collection $idSeance;
+    private $numTelephone;
 
     /**
-     * @var Collection<int, Produit>
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=50, nullable=false)
      */
-    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
-    private Collection $idProduit;
+    private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=50, nullable=false)
+     */
+    private $role;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="adresse", type="string", length=50, nullable=true)
+     */
+    private $adresse;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="date_de_naissance", type="date", nullable=true)
+     */
+    private $dateDeNaissance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=50, nullable=false)
+     */
+    private $email;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="photo_de_profil", type="string", length=255, nullable=true)
+     */
+    private $photoDeProfil;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Cinema", mappedBy="idUser")
+     */
+    private $idCinema = array();
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Seance", inversedBy="idUser")
+     * @ORM\JoinTable(name="ticket",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_user", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_seance", referencedColumnName="id_seance")
+     *   }
+     * )
+     */
+    private $idSeance = array();
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Produit", mappedBy="idClient")
+     */
+    private $idProduit = array();
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idCinema = new ArrayCollection();
-        $this->idSeance = new ArrayCollection();
-        $this->idProduit = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): static
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(string $prenom): static
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getNumTelephone(): ?int
-    {
-        return $this->numTelephone;
-    }
-
-    public function setNumTelephone(int $numTelephone): static
-    {
-        $this->numTelephone = $numTelephone;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(?string $adresse): static
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getDateDeNaissance(): ?\DateTimeInterface
-    {
-        return $this->dateDeNaissance;
-    }
-
-    public function setDateDeNaissance(?\DateTimeInterface $dateDeNaissance): static
-    {
-        $this->dateDeNaissance = $dateDeNaissance;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPhotoDeProfil(): ?string
-    {
-        return $this->photoDeProfil;
-    }
-
-    public function setPhotoDeProfil(?string $photoDeProfil): static
-    {
-        $this->photoDeProfil = $photoDeProfil;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Cinema>
-     */
-    public function getIdCinema(): Collection
-    {
-        return $this->idCinema;
-    }
-
-    public function addIdCinema(Cinema $idCinema): static
-    {
-        if (!$this->idCinema->contains($idCinema)) {
-            $this->idCinema->add($idCinema);
-            $idCinema->addIdUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdCinema(Cinema $idCinema): static
-    {
-        if ($this->idCinema->removeElement($idCinema)) {
-            $idCinema->removeIdUser($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Seance>
-     */
-    public function getIdSeance(): Collection
-    {
-        return $this->idSeance;
-    }
-
-    public function addIdSeance(Seance $idSeance): static
-    {
-        if (!$this->idSeance->contains($idSeance)) {
-            $this->idSeance->add($idSeance);
-        }
-
-        return $this;
-    }
-
-    public function removeIdSeance(Seance $idSeance): static
-    {
-        $this->idSeance->removeElement($idSeance);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Produit>
-     */
-    public function getIdProduit(): Collection
-    {
-        return $this->idProduit;
-    }
-
-    public function addIdProduit(Produit $idProduit): static
-    {
-        if (!$this->idProduit->contains($idProduit)) {
-            $this->idProduit->add($idProduit);
-            $idProduit->addIdClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdProduit(Produit $idProduit): static
-    {
-        if ($this->idProduit->removeElement($idProduit)) {
-            $idProduit->removeIdClient($this);
-        }
-
-        return $this;
+        $this->idCinema = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idSeance = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idProduit = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 }

@@ -1,13 +1,24 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseBack.html.twig' %}
 
 {% block title %}Edit Sponsor{% endblock %}
 
 {% block body %}
-    <h1>Edit Sponsor</h1>
+<div class="mt-4">
+            <a href="{{ path('app_sponsor_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+            </a>
 
-    {{ include('sponsor/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-edit text-primary mr-2"></i>Edit Sponsor</h1>
 
-    <a href="{{ path('app_sponsor_index') }}">back to list</a>
+        <div class="card shadow">
+            <div class="card-body">
+                {{ include('sponsor/_form.html.twig', {'button_label': 'Update'}) }}
+            </div>
+        </div>
 
-    {{ include('sponsor/_delete_form.html.twig') }}
+        
+            {{ include('sponsor/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

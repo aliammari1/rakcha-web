@@ -2,115 +2,69 @@
 
 namespace App\Entity;
 
-use App\Repository\EpisodesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-
-#[ORM\Entity(repositoryClass: EpisodesRepository::class)]
-#[ORM\Table(name: 'episodes')]
-#[ORM\Index(name: 'idserie', columns: ['idserie'])]
+/**
+ * Episodes
+ *
+ * @ORM\Table(name="episodes", indexes={@ORM\Index(name="idserie", columns={"idserie"})})
+ * @ORM\Entity
+ */
 class Episodes
 {
-    #[ORM\Column(name: 'idepisode', type: 'integer', nullable: false)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
-    private int $idepisode;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="idepisode", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $idepisode;
 
-    #[ORM\Column(name: 'titre', type: 'string', length: 30, nullable: false)]
-    private string $titre;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="titre", type="string", length=30, nullable=false)
+     */
+    private $titre;
 
-    #[ORM\Column(name: 'numeroepisode', type: 'integer', nullable: false)]
-    private int $numeroepisode;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="numeroepisode", type="integer", nullable=false)
+     */
+    private $numeroepisode;
 
-    #[ORM\Column(name: 'saison', type: 'integer', nullable: false)]
-    private int $saison;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="saison", type="integer", nullable=false)
+     */
+    private $saison;
 
-    #[ORM\Column(name: 'image', type: 'string', length: 255, nullable: false)]
-    private string $image;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", length=255, nullable=false)
+     */
+    private $image;
 
-    #[ORM\Column(name: 'video', type: 'string', length: 255, nullable: false)]
-    private string $video;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="video", type="string", length=255, nullable=true)
+     */
+    private $video;
 
-    #[ORM\ManyToOne(targetEntity: Series::class)]
-    #[ORM\JoinColumn(name: 'idserie', referencedColumnName: 'idserie')]
-    private ?Series $idserie = null;
-
-    public function getIdepisode(): ?int
-    {
-        return $this->idepisode;
-    }
-
-    public function getTitre(): ?string
-    {
-        return $this->titre;
-    }
-
-    public function setTitre(string $titre): static
-    {
-        $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function getNumeroepisode(): ?int
-    {
-        return $this->numeroepisode;
-    }
-
-    public function setNumeroepisode(int $numeroepisode): static
-    {
-        $this->numeroepisode = $numeroepisode;
-
-        return $this;
-    }
-
-    public function getSaison(): ?int
-    {
-        return $this->saison;
-    }
-
-    public function setSaison(int $saison): static
-    {
-        $this->saison = $saison;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getVideo(): ?string
-    {
-        return $this->video;
-    }
-
-    public function setVideo(string $video): static
-    {
-        $this->video = $video;
-
-        return $this;
-    }
-
-    public function getIdserie(): ?Series
-    {
-        return $this->idserie;
-    }
-
-    public function setIdserie(?Series $idserie): static
-    {
-        $this->idserie = $idserie;
-
-        return $this;
-    }
+    /**
+     * @var \Series
+     *
+     * @ORM\ManyToOne(targetEntity="Series")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="idserie", referencedColumnName="idserie")
+     * })
+     */
+    private $idserie;
 
 
 }
