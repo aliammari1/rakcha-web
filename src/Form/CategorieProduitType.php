@@ -16,19 +16,13 @@ class CategorieProduitType extends AbstractType
     {
         $builder
             ->add('nomCategorie', null, [
-                'constraints' => [
-                    new NotBlank(),
 
-                    'label'=> 'Name',
-                ],
+                'label' => 'Name',
             ])
             ->add('description', TextareaType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 10]),
-                ],
 
-                'label'=> 'Description',
+
+                'label' => 'Description',
             ])
         ;
     }

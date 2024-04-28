@@ -21,6 +21,19 @@ class ProduitRepository extends ServiceEntityRepository
         parent::__construct($registry, Produit::class);
     }
 
+    // Dans votre repository ProduitRepository
+public function findByPriceRange($minPrice, $max)
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.prix >= :minPrice')
+        ->andWhere('p.prix <= :maxPrice')
+        ->setParameter('minPrice', $minPrice)
+        ->setParameter('maxPrice', $max)
+        ->getQuery()
+        ->getResult();
+}
+
+
 //    /**
 //     * @return Produit[] Returns an array of Produit objects
 //     */
@@ -45,4 +58,7 @@ class ProduitRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+
 }

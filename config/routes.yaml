@@ -2,3 +2,52 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+app_panier_liste:
+    path: /panier/listepanier
+    controller: App\Controller\PanierController::afficherPanier
+    methods: GET
+
+update_quantity:
+    path: /update-quantity
+    controller: App\Controller\PanierController::updateQuantity
+    methods: POST
+
+panier_calculate_total:
+    path: /panier/calculate-total
+    controller: App\Controller\PanierController::calculateTotal
+    methods: ['POST']
+
+app_payment:
+    path: /payment
+    controller: App\Controller\CommandeController::payment
+    methods: ['POST']
+
+app_commande_form:
+    path: /order/form
+    controller: App\Controller\CommandeController::form
+    methods: ['GET']   
+
+app_commande_new:
+    path: /new
+    controller: App\Controller\CommandeController::new
+    methods: ['POST']
+
+app_edit_commentaire:
+    path: /commentaireproduit/{id}/edit
+    controller: App\Controller\CommentaireProduitController::edit
+    methods: ['POST']
+
+app_delete_commentaire:
+    path: /commentaireproduit/{id}
+    controller: 'App\Controller\CommentaireProduitController::deleteCommentaire'
+    methods: ['POST']
+
+
+
+
+
+
+
+
+
+

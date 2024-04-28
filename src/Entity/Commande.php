@@ -7,6 +7,7 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
@@ -28,15 +29,23 @@ class Commande
     #[ORM\Column(name: 'statu', type: 'string', length: 50, nullable: false, options: ['default' => 'En cours'])]
     private string $statu = 'En cours';
 
-    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'num_telephone', type: 'integer')]
+    #[Assert\NotNull(message: 'The telephone number should not be null')]
+    #[Assert\Length(max: 8, maxMessage: 'The telephone number should not exceed {{ limit }} characters')]
     private int $numTelephone;
 
-    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'adresse', type: 'string', length: 50)]
+    #[Assert\NotNull(message: 'The address should not be null')]
     private string $adresse;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
     private ?Users $idclient = null;
+
+    public function __construct()
+    {
+        
+    }
 
     public function getIdcommande(): ?int
     {

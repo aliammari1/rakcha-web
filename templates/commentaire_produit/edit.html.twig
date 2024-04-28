@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CommentaireProduit{% endblock %}
+
+{% block body %}
+    <h1>Edit CommentaireProduit</h1>
+
+    {{ include('commentaire_produit/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_commentaire_produit_index') }}">back to list</a>
+
+    {{ include('commentaire_produit/_delete_form.html.twig') }}
+{% endblock %}

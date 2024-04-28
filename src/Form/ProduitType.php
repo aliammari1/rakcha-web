@@ -25,52 +25,58 @@ class ProduitType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                
 
                 'label'=> 'Name',
+                'attr' => [
+                    'placeholder' => 'Enter your name',
+                ],
             ])
             ->add('prix', null, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Type(['type' => 'integer']),
-                    
-                ],
+                
                 'label'=> 'Price',
+
+                'attr' => [
+                    'placeholder' => 'Enter your Price she must be a number',
+                ],
             ])
             ->add('description', TextareaType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 10]),
-                ],
+                
 
                 'label'=> 'Description',
+                'attr' => [
+                    'placeholder' => 'Enter your description she must be more than 20 characters',
+                ],
             ])
             ->add('quantitep', null, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Type(['type' => 'integer']),
-                ],
+              
 
                 'label'=> 'Qantity',
+                'attr' => [
+                    'placeholder' => 'Enter your quantity she must be a number',
+                ],
             ])
             ->add('idCategorieproduit', EntityType::class, [
                 'class' => CategorieProduit::class,
                 'choice_label' => 'nomcategorie',
                 'placeholder' => 'Choisir une catégorie',
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                
 
                 'label'=> 'Category',
+                'attr' => [
+                    'placeholder' => 'Shoose your category',
+                ],
             ])
             ->add('image', FileType::class, [
-                'label' => 'Image',
+                'label' => 'Picture',
                 'mapped' => false,
                 'required' => false,
 
-                'label'=> 'Picture',
+                'attr' => [
+                    'placeholder' => 'shoose your picture',
+                ],
+
+   
             ]);
     }
 

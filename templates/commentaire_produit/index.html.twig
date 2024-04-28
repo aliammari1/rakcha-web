@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CommentaireProduit index{% endblock %}
+
+{% block body %}
+    <h1>CommentaireProduit index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>IdCommentaire</th>
+                <th>Commentaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commentaire_produit in commentaire_produits %}
+            <tr>
+                <td>{{ commentaire_produit.id }}</td>
+                <td>{{ commentaire_produit.idCommentaire }}</td>
+                <td>{{ commentaire_produit.commentaire }}</td>
+                <td>
+                    <a href="{{ path('app_commentaire_produit_show', {'id': commentaire_produit.id}) }}">show</a>
+                    <a href="{{ path('app_commentaire_produit_edit', {'id': commentaire_produit.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_commentaire_produit_new') }}">Create new</a>
+{% endblock %}

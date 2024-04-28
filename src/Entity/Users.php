@@ -67,8 +67,11 @@ class Users
     /**
      * @var Collection<int, Produit>
      */
-    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
+    /*#[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]*/
     private Collection $idProduit;
+
+    #[ORM\OneToMany(mappedBy: 'idClient', targetEntity: CommentaireProduit::class)]
+    private Collection $idComm;
 
     /**
      * Constructor
@@ -78,6 +81,7 @@ class Users
         $this->idCinema = new ArrayCollection();
         $this->idSeance = new ArrayCollection();
         $this->idProduit = new ArrayCollection();
+        $this->idComm = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -266,6 +270,36 @@ class Users
     {
         if ($this->idProduit->removeElement($idProduit)) {
             $idProduit->removeIdClient($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CommentaireProduit>
+     */
+    public function getIdComm(): Collection
+    {
+        return $this->idComm;
+    }
+
+    public function addIdComm(CommentaireProduit $idComm): static
+    {
+        if (!$this->idComm->contains($idComm)) {
+            $this->idComm->add($idComm);
+            $idComm->setIdClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdComm(CommentaireProduit $idComm): static
+    {
+        if ($this->idComm->removeElement($idComm)) {
+            // set the owning side to null (unless already changed)
+            if ($idComm->getIdClient() === $this) {
+                $idComm->setIdClient(null);
+            }
         }
 
         return $this;

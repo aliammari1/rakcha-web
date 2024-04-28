@@ -4,12 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Form\ProduitType;
+use App\Entity\CommentaireProduit;
+use App\Form\CommentaireProduitType;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\CommentaireProduitRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 
 
 #[Route('/produit')]
@@ -26,109 +32,205 @@ class ProduitController extends AbstractController
             $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
         }
         return $this->render('produit/tables.html.twig', [
-            'produit' =>$produitRepository->findAll(),
+            'produit' => $produitRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
     }
 
+
+
+
     #[Route('/listeproduit', name: 'app_produit_liste', methods: ['GET'])]
-    public function liste(ProduitRepository $produitRepository): Response
+    public function liste(ProduitRepository $produitRepository, Request $request): Response
     {
-       return $this->render('produit/about.html.twig', [
-          'produit' => $produitRepository->findAll(),
-       ]);
+        // Récupérer tous les produits
+        $produit = $produitRepository->findAll();
+
+        // Initialiser une variable pour stocker le prix maximal
+        $maxPrice = 0;
+
+        // Parcourir tous les produits et trouver le prix maximal
+        foreach ($produit as $pro) {
+            $prix = $pro->getPrix();
+            if ($prix > $maxPrice) {
+                $maxPrice = $prix;
+            }
+        }
+
+
+        // Initialiser un tableau pour stocker le nombre de produits par catégorie
+        $nombreProduitsParCategorie = [];
+
+        // Parcourir tous les produits et compter les produits par catégorie
+        foreach ($produit as $pro) {
+            $categorie = $pro->getIdCategorieproduit()->getNomCategorie();
+            if (!isset($nombreProduitsParCategorie[$categorie])) {
+                $nombreProduitsParCategorie[$categorie] = 1;
+            } else {
+                $nombreProduitsParCategorie[$categorie]++;
+            }
+        }
+
+        if ($request->query->has('minPrice') && $request->query->has('maxPrice')) {
+            $minPrice = $request->query->get('minPrice', 0); // Valeur par défaut de 0 si non spécifiée
+            $max = $request->query->get('maxPrice', $maxPrice); // Valeur maximale par défaut
+
+            // Récupérer les produits en fonction des valeurs de prix min et max
+            $produit = $produitRepository->findByPriceRange($minPrice, $max);
+
+            // Si la requête est une requête AJAX, renvoyer les produits au format JSON
+            return new JsonResponse(['produits' => $produit, 'maxPrice' => $max]);
+        }
+
+        return $this->render('produit/about.html.twig', [
+            'produit' => $produit, // Passer les produits à la vue
+            'nombreProduitsParCategorie' => $nombreProduitsParCategorie, // Passer le nombre de produits par catégorie à la vue
+            'maxPrice' => $maxPrice, // Passer le prix maximal à la vue
+        ]);
     }
 
+
+
+
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
+        $updateForms = array();
+        for ($i = 0; $i < count($produitRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
+        }
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('image')->getData();
-            if ($imageFile){
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            if ($imageFile) {
+
                 // Ceci est nécessaire pour générer un nom de fichier unique basé sur le nom de fichier original.
                 $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                
+
                 $newFilename = 'img/produit/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                
+
                 try {
                     $imageFile->move(
                         $this->getParameter('APP_IMAGE_DIRECTORY'),
                         $newFilename
                     );
-                }catch (FileException $e) { }
-            $produit->setImage($newFilename);
-        }
-          
+                } catch (FileException $e) {
+                }
+                $produit->setImage($newFilename);
+            }
+
 
             $entityManager->persist($produit);
             $entityManager->flush();
 
+
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('produit/new.html.twig', [
-            'produit' => $produit,
-            'form' => $form,
+        $hasErrorsCreate = true;
+        return $this->render('produit/tables.html.twig', [
+            'produit' => $produitRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
-    #[Route('/{idProduit}', name: 'app_produit_show', methods: ['GET'])]
-    public function show(Produit $produit): Response
+
+    #[Route('/show/{idProduit}', name: 'app_produit_show', methods: ['GET'])]
+    public function show(Produit $produit, CommentaireProduitRepository $commentaireRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('produit/show.html.twig', [
-            'produit' => $produit,
-        ]);
+         // Récupérer les commentaires associés au produit
+    $commentaires = $commentaireRepository->findBy(['idproduit' => $produit]);
+
+    // Créer un formulaire pour ajouter un nouveau commentaire
+    $commentaireProduit = new CommentaireProduit();
+    $form = $this->createForm(CommentaireProduitType::class, $commentaireProduit);
+    $form->handleRequest($request);
+
+    // Vérifier si le formulaire a été soumis et est valide
+    if ($form->isSubmitted() && $form->isValid()) {
+       
+        $entityManager->persist($commentaireProduit);
+        $entityManager->flush();
+
+        // Rafraîchir la page pour afficher le nouveau commentaire
+        return $this->redirectToRoute('app_commentaire_produit_show', ['id' => $produit->getIdproduit()]);
     }
 
-    #[Route('/{idProduit}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    // Rendez la vue avec les détails du produit et les commentaires
+    return $this->render('produit/blog.html.twig', [
+        'produit' => $produit,
+        'commentaires' => $commentaires,
+        'form' => $form->createView(),
+    ]);
+    }
+    
+
+
+
+
+    #[Route('/{idProduit}/edit/{formUpdateNumber}/', name: 'app_produit_edit', methods: ['GET', 'POST'])]
+    public function edit($formUpdateNumber, Request $request, Produit $produit, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
+
+        $updateForms = array();
+        for ($i = 0; $i < count($produitRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
+        }
+
         $form = $this->createForm(ProduitType::class, $produit);
-        $form->handleRequest($request);
+        $updateform = $this->createForm(ProduitType::class, $produit);
+        $updateform->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile){
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        if ($updateform->isSubmitted() && $updateform->isValid()) {
+            $imageFile = $updateform->get('image')->getData();
+            if ($imageFile) {
+
                 // Ceci est nécessaire pour générer un nom de fichier unique basé sur le nom de fichier original.
                 $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                
+
                 $newFilename = 'img/produit/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                
+
                 try {
                     $imageFile->move(
                         $this->getParameter('APP_IMAGE_DIRECTORY'),
                         $newFilename
                     );
-                }catch (FileException $e) { }
-            $produit->setImage($newFilename);
-        }
+                } catch (FileException $e) {
+                }
+                $produit->setImage($newFilename);
+            }
 
             $entityManager->flush();
 
+
             return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
         }
+        $entityManager->refresh($produit);
 
-        return $this->renderForm('produit/edit.html.twig', [
-            'produit' => $produit,
-            'form' => $form,
+        return $this->render('produit/tables.html.twig', [
+            'produit' => $produitRepository->findAll(),
+            'form' => $form->createView(),
+            'updateform' => $updateform->createView(),
+            'updateForms' => $updateForms,
+            "formUpdateNumber" => $formUpdateNumber,
         ]);
     }
 
     #[Route('/{idProduit}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$produit->getIdProduit(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $produit->getIdProduit(), $request->request->get('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();
+
         }
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
@@ -137,5 +239,5 @@ class ProduitController extends AbstractController
 
 
 
-    
+
 }
