@@ -423,17 +423,21 @@
     <div class="blog_1r">
         <div class="blog_1r1 p-4">
             <h5>Total : <span id="selected-total">0</span> DT</h5>
-
             <form  action="{{ path('app_commande_form') }}" method="GET">
-                <input type="hidden" name="total" id="total-value" value="0">
+                <input type="hidden" name="selected-total" id="selected-total" value="selected-total">
+                <input type="hidden" name="produits_selectionnes" value=""  id="selected_item">
+
                 {% for item in panierItems %}
+
                     <div class="checkbox-wrapper-46">
-                        <input type="checkbox" name="produits_selectionnes[]" class="inp-cbx checkbox-item" value="{{ item.idPanier }}" onchange="updateTotal()">
+                        <input type="checkbox" name="produits_selectionnes" id="selected_item_ids" class="inp-cbx checkbox-item" value="{{ item.idPanier }}" onchange="updateTotal()">
+                        
                         <label class="cbx" for="cbx">
                             <span></span>
                         </label>
                     </div>
                 {% endfor %}
+             
                 <button type="submit" class="fancy" id="buy-products-btn">
                     <span class="top-key"></span>
                     <span class="text">Buy Products</span>
@@ -461,27 +465,27 @@
 
 
 function showAlert(message) {
-    // Créer un nouvel élément div pour l'alerte
+    
     var alertDiv = document.createElement('div');
     alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
     alertDiv.setAttribute('role', 'alert');
 
-    // Ajouter le message à l'alerte
+    
     alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
 
-    // Créer le bouton de fermeture de l'alerte
+   
     var closeButton = document.createElement('button');
     closeButton.setAttribute('type', 'button');
     closeButton.classList.add('btn-close');
     closeButton.setAttribute('data-bs-dismiss', 'alert');
     closeButton.setAttribute('aria-label', 'Close');
     
-    // Ajouter le bouton de fermeture à l'alerte
+   
     alertDiv.appendChild(closeButton);
 
-    // Ajouter l'alerte au placeholder
+   
     var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-    alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
+    alertPlaceholder.innerHTML = ''; 
     alertPlaceholder.appendChild(alertDiv);
 }
 
@@ -490,7 +494,7 @@ function incrementQuantity(inputId, itemId) {
     var currentValue = parseInt(inputElement.value);
     if (!isNaN(currentValue)) {
         inputElement.value = currentValue + 1;
-        updateQuantity(inputId, itemId); // Appeler la fonction pour mettre à jour la quantité sur le serveur
+        updateQuantity(inputId, itemId); 
     } else {
         inputElement.value = 1;
     }
@@ -501,7 +505,7 @@ function decrementQuantity(inputId, itemId) {
     var currentValue = parseInt(inputElement.value);
     if (!isNaN(currentValue) && currentValue > 1) {
         inputElement.value = currentValue - 1;
-        updateQuantity(inputId, itemId); // Appeler la fonction pour mettre à jour la quantité sur le serveur
+        updateQuantity(inputId, itemId); 
     } else {
         inputElement.value = 1;
     }
@@ -517,7 +521,7 @@ function updateQuantity(inputId) {
     console.log(stockDisponible);
     
 
-    // Vérifier si la nouvelle quantité dépasse le stock disponible
+   
     if (!isNaN(newQuantity) && newQuantity <= stockDisponible) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "{{ path('update_quantity') }}", true);
@@ -530,10 +534,10 @@ function updateQuantity(inputId) {
         var data = JSON.stringify({ itemId: itemId, newQuantity: newQuantity });
         xhr.send(data);
     } else {
-        // Afficher l'alerte personnalisée si la quantité dépasse le stock disponible
+      
         showAlert('Stock insuffisant ! La quantité que vous avez choisie dépasse le stock disponible.');
 
-        // Réinitialiser la valeur de l'input à la valeur précédente
+       
         inputElement.value = inputElement.defaultValue;
     }
 }
@@ -547,13 +551,16 @@ function updateQuantity(inputId) {
 
 function calculateTotal(checkbox) {
     var checkboxes = document.querySelectorAll('.checkbox-item:checked');
+   
+    
     var itemIds = Array.from(checkboxes).map(function(checkbox) {
         return parseInt(checkbox.getAttribute('data-id'));
     });
     console.log(checkboxes);
     console.log(checkbox);
     console.log(itemIds);
-    var hiddenField = document.querySelector('input[name="produits_selectionnes[]"]');
+    var hiddenField = document.querySelector('input[name="produits_selectionnes"]');
+    
         hiddenField.value = itemIds.join(',');
     
     var xhr = new XMLHttpRequest();
@@ -624,27 +631,44 @@ buyProductsForm.addEventListener('submit', function(event) {
 
 <script>
     function updateTotal() {
-        var checkboxes = document.querySelectorAll('.checkbox-item:checked');
-        var itemIds = Array.from(checkboxes).map(function(checkbox) {
-            return parseInt(checkbox.getAttribute('data-id'));
-        });
-        var hiddenField = document.querySelector('input[name="produits_selectionnes[]"]');
-        hiddenField.value = itemIds.join(',');
+    
+    var checkboxes = document.querySelectorAll('.checkbox-item:checked');
+    
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "{{ path('panier_calculate_total') }}", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                var total = JSON.parse(xhr.responseText).total;
-                document.getElementById("selected-total").innerText = total;
-            }
-        };
+    var itemIds = Array.from(checkboxes).map(function(checkbox) {
+        return parseInt(checkbox.getAttribute('data-id'));
+    });
 
-        var data = JSON.stringify({ itemIds: itemIds });
-        xhr.send(data);
-    }
+ 
+    var hiddenField = document.getElementById('selected_item_ids');
+    hiddenField.value = itemIds.join(',');
+    var hiddenInput = document.getElementById('selected_item');
+
+        // Récupérer la valeur de l'attribut name
+        var inputName = hiddenInput.name;
+
+   
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "{{ path('app_commande_form') }}", true); 
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            // Mettre à jour l'élément HTML avec le total calculé
+            var total = JSON.parse(xhr.responseText).total;
+            document.getElementById("selected-total").innerText = total;
+        }
+    };
+
+ 
+    var data = JSON.stringify({ itemIds: itemIds }); 
+    xhr.send(data);
+}
+
 </script>
+
+
+
+
 
 
 

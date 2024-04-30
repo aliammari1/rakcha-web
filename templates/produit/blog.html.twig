@@ -827,7 +827,7 @@
                         var response = JSON.parse(xhr.responseText);
                         console.log('Commentaire mis à jour avec succès', newComment);
                         // Mettre à jour l'interface utilisateur avec le nouveau commentaire
-                        commentContent.textContent = newComment; // Utilisation de la nouvelle valeur du commentaire provenant de la réponse
+                        commentContent.textContent = newComment; 
                     } else {
                         console.error('Erreur lors de la mise à jour du commentaire');
                     }
@@ -885,53 +885,53 @@
 
 	<script>
 	function showAlert(message) {
-		// Créer un nouvel élément div pour l'alerte
+
 		var alertDiv = document.createElement('div');
 		alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
 		alertDiv.setAttribute('role', 'alert');
 	
-		// Ajouter le message à l'alerte
+		
 		alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
 	
-		// Créer le bouton de fermeture de l'alerte
+		
 		var closeButton = document.createElement('button');
 		closeButton.setAttribute('type', 'button');
 		closeButton.classList.add('btn-close');
 		closeButton.setAttribute('data-bs-dismiss', 'alert');
 		closeButton.setAttribute('aria-label', 'Close');
 		
-		// Ajouter le bouton de fermeture à l'alerte
+		
 		alertDiv.appendChild(closeButton);
 	
-		// Ajouter l'alerte au placeholder
+		
 		var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-		alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
+		alertPlaceholder.innerHTML = ''; 
 		alertPlaceholder.appendChild(alertDiv);
 	}
 
 
-/// Empêcher la soumission du formulaire par défaut
-document.getElementById('myForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Empêcher la soumission du formulaire par défaut
 
-    // Récupérer la quantité demandée dans le formulaire
+document.getElementById('myForm').addEventListener('submit', function(event) {
+    event.preventDefault(); 
+
+    
     var quantiteDemandee = parseInt(document.getElementById('quantite').value);
 
-    // Récupérer la quantité disponible du produit
+    
     var quantiteP = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite'));
 
-    // Récupérer la quantité dans le panier du produit
+    
     var quantiteDansPanier = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite-panier'));
 
-    // Calculer la quantité totale du produit (quantité disponible + quantité dans le panier)
+   
     var quantiteTotale = quantiteP + quantiteDansPanier;
 
-    // Comparer la quantité demandée avec la quantité totale disponible
+    
     if (quantiteTotale < quantiteDemandee || quantiteTotale < 0) {
-        // Afficher une alerte si la quantité demandée est invalide
+     
         showAlert('Stock insuffisant.');
     } else {
-        // Envoyer la requête AJAX si la quantité est valide
+       
         addToPanier();
     }
 });

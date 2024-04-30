@@ -99,32 +99,32 @@ class CommentaireProduitController extends AbstractController
             ],
         ]);
         
-        // Execute cURL request
+        
         $response = curl_exec($curl);
         $err = curl_error($curl);
         
-        // Close cURL session
+        
         curl_close($curl);
         
-        // Check for cURL errors
+       
         if ($err) {
-            // Handle cURL error
+           
             return "cURL Error #:" . $err;
         } else {
-            // Decode JSON response into an associative array
+            
             $responseData = json_decode($response, true);
             
-            // Check if decoding was successful
+            
             if ($responseData === null) {
-                // Handle JSON decoding error
+               
                 return "Failed to decode JSON response";
             } else {
-                // Check if the response contains 'corrected_text' key
+                
                 if (isset($responseData['corrected_text'])) {
-                    // Access the corrected text from the decoded response
+                   
                     return $responseData['corrected_text'];
                 } else {
-                    // Handle case where 'corrected_text' key is not present
+                   
                     return "No corrected text found in the response";
                 }
             }
@@ -137,25 +137,25 @@ class CommentaireProduitController extends AbstractController
     public function show(EntityManagerInterface $entityManager,Produit $produit, CommentaireProduitRepository $commentaireRepository, Request $request): Response
     {
        
-      // Récupérer les commentaires associés au produit
+     
     $commentaires = $commentaireRepository->findBy(['idproduit' => $produit]);
 
-    // Créer un formulaire pour ajouter un nouveau commentaire
+   
     $commentaireProduit = new CommentaireProduit();
     $form = $this->createForm(CommentaireProduitType::class, $commentaireProduit);
     $form->handleRequest($request);
 
-    // Vérifier si le formulaire a été soumis et est valide
+  
     if ($form->isSubmitted() && $form->isValid()) {
         
         $entityManager->persist($commentaireProduit);
         $entityManager->flush();
 
-        // Rafraîchir la page pour afficher le nouveau commentaire
+       
         return $this->redirectToRoute('app_commentaire_produit_show', ['id' => $produit->getIdproduit()]);
     }
 
-    // Rendez la vue avec les détails du produit et les commentaires
+   
     return $this->render('produit/blog.html.twig', [
         'produit' => $produit,
         'commentaires' => $commentaires,
@@ -170,25 +170,25 @@ class CommentaireProduitController extends AbstractController
     #[Route('/commentaireproduit/{id}/edit', name: 'app_edit_commentaire', methods: ['POST'])]
     public function edit(Request $request, $id, EntityManagerInterface $entityManager, CommentaireProduitRepository $commentaireRepository): Response
     {
-                // Récupérer le commentaire à partir de l'identifiant
+              
             $commentaireProduit = $commentaireRepository->find($id);
 
-            // Vérifier si le commentaire existe
+        
             if (!$commentaireProduit) {
                 throw $this->createNotFoundException('Commentaire non trouvé');
             }
 
-            // Récupérer les données JSON envoyées depuis la requête
+           
             $data = json_decode($request->getContent(), true);
 
             if (!isset($data['contenu'])) {
                 return $this->json(['error' => 'Le champ "contenu" est manquant dans les données JSON.'], 200);
             }
 
-            // Mettre à jour le contenu du commentaire
-            $commentaireProduit->setCommentaire($data['contenu']);
+            $correctedText = $this->autoCorrect($data['contenu']);
+            $commentaireProduit->setCommentaire($correctedText);
 
-            // Enregistrer les modifications dans la base de données
+        
             $entityManager->flush();
 
             

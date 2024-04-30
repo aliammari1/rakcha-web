@@ -347,6 +347,9 @@
 			border: 1px solid #ffcaa6;
 			background-color: #ffcaa6;
 		}
+		
+
+
 	</style>
 
 {% endblock %}
@@ -356,6 +359,9 @@
 	<body>
 
 		{{ block("header") }}
+	
+		
+
 
 		<section id="center" class="center_o pt-2 pb-2">
 			<div class="container-xl">
@@ -368,11 +374,14 @@
 					<div class="col-md-7">
 						<div class="center_o1r text-end">
 							<h6 class="mb-0 col_red">
-								<a href="{{ path('app_produit_liste')}}">Home</a>
+								
+								<a href="{{ path('app_produit_liste')}}" >home</a>
+							
+								
 								<span class="me-2 ms-2 text-light">
 									<i class="fa fa-caret-right align-middle"></i>
 								</span>
-								Films
+								Products
 							</h6>
 						</div>
 					</div>
@@ -386,12 +395,10 @@
 					<div class="row about_pg1">
 						<div class="col-md-12">
 							<h2>
-								<span class="col_red">We Are Planet</span><br>
+								<span class="col_red">Rakcha</span><br>
 								Providing Movie Production Services
 							</h2>
-							<p class="mt-3 w-50">Providing you with the most actionable Movie Production Services. Planis creates and distribute Video Content.</p>
-							<p class="w-50">Planet Lorem Ipsum is simply dummy text of the printing. Lorem Ipsum is simply Video Content  dummy industry. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-							<p class="w-50">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore. Aliquam ut elit venenatis, congue dolor ut, mattis leo</p>
+							<p class="mt-3 w-50">Cinéphile products cater to the passionate movie enthusiast, offering a diverse range of items designed to enhance the movie-watching experience. These products often include collectibles such as limited edition DVDs or Blu-rays, movie posters, and memorabilia featuring iconic scenes or characters from beloved films. Additionally, cinéphile products may extend to sophisticated home theater systems, comfortable seating arrangements, and ambient lighting solutions to recreate the immersive atmosphere of a cinema in the comfort of one's home. For the avid cinephile, these products serve as more than just possessions; they symbolize a deep appreciation for the art of filmmaking and a desire to surround oneself with the magic of cinema.</p>
 							<h6 class="mb-0">
 								<a class="button" href="#">Learn More</a>
 							</h6>
@@ -411,7 +418,7 @@
 					<div class="col-md-4">
 						<div class="blog_1r">
 							<div class="blog_1r1 p-4">
-								<h4>Main
+								<h4>Products
 									<span class="col_red">Menu</span>
 								</h4>
 								<hr class="line mb-4">
@@ -423,6 +430,7 @@
 									</h6>
 									<hr>
 								{% endfor %}
+								
 							</div>
 
 							<div class="blog_1r1 p-4 mt-4">
@@ -445,6 +453,12 @@
 
 					<!-- Section des produits -->
 					<div class="col-md-8">
+						<section class="pt-4 pb-4 bg_grey">
+						<!-- Champ de recherche -->
+						<input type="text" id="search-input" placeholder="Search Product">
+						</section>
+						
+						
 						<div class="row trend_2 mt-4">
 							<div class="carousel-inner">
 								<div id="productContainer" class="row m-6">
@@ -453,7 +467,7 @@
 									{% for chunk in produit|batch(2) %}
 										{% for pro in chunk %}
 											<div class="col-md-6 mb-4">
-												<div class="cardproduct">
+												<div class="cardproduct" data-name={{ pro.nom|lower }}>
 
 													<a href="{{ path('app_produit_show', {'idProduit': pro.idProduit}) }}"><img class="cardproduct-img" src="{{ asset(pro.image) }}"></a>
 													<div class="cardproduct-info">
@@ -638,77 +652,69 @@ document.body.style.paddingTop = '0'
 
 
 
-<!-- Script JavaScript pour gérer le filtrage par prix -->
+
+
+
 <script>
+	
+		// Fonction de recherche
+		document.getElementById('search-input').addEventListener('input', function() {
+			var searchText = this.value.toLowerCase();
+			var cards = document.querySelectorAll('.cardproduct');
 
-document.getElementById('priceRange').addEventListener('input', function () {
-var minPrice = document.getElementById('priceRange').value;
-var maxPrice = {{ maxPrice }};
-
-updateProductList(minPrice, maxPrice);
-});
-
-
-function updateProductList(minPrice, maxPrice) {
-var xhr = new XMLHttpRequest();
-xhr.open('GET', '/produit/listeproduit?minPrice=' + minPrice + '&maxPrice=' + maxPrice, true);
-
-xhr.onload = function () {
-if (xhr.status >= 200 && xhr.status < 400) {
-var response = JSON.parse(xhr.responseText);
-console.log(response);
-var produits = response.produits;
-var newMaxPrice = response.maxPrice;
-// Nouveau prix maximal
-
-// Mettre à jour le prix maximal dans l'interface utilisateur
-document.getElementById('priceRange').max = newMaxPrice;
-document.getElementById('maxPriceDisplay').textContent = `${newMaxPrice} DT`;
-
-updateProductView(produits);
-} else {
-console.error('Error fetching product list: ' + xhr.statusText);
-}
-};
-
-xhr.send();
-}
-
-function filterProducts(produit, minPrice, maxPrice) {
-var filteredProducts = produit.filter(function (pro) {
-return parseInt(pro.prix) >= parseInt(minPrice) && parseInt(pro.prix) <= parseInt(maxPrice);
-});
-
-updateProductView(filteredProducts);
-}
-
-function updateProductView(produits) {
-var productContainer = document.getElementById('productContainer');
-productContainer.innerHTML = '';
-// Efface le contenu existant du conteneur
-
-// Boucle à travers les produits et les ajoute au conteneur
-produits.forEach(function (pro) {
-var productHtml = '<div class="col-md-6 mb-4">' + '<div class="trend_2im clearfix position-relative">' + '<div class="trend_2im1 clearfix">' + '<div class="grid">' + '<figure class="effect-jazz mb-0">' + '<a href="#"><img src="' + pro.image + '" height="200" width="320" alt="img25"></a>' + '</figure>' + '</div>' + '</div>' + '</div>' + '<div class="trend_2ilast bg_grey p-3 clearfix" style="height: 250px">' + '<h5><a class="col_red" href="#">' + pro.nom + '</a></h5>' + '<p class=" " style=" font-size: 15px;font-family: Arial, sans-serif;word-wrap: break-word;overflow: hidden;text-overflow: ellipsis; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">' + pro.description + '</p>' + '<span class="col_red"><p class="">' + pro.prix + ' DT</p></span>' + '<a href="#" class="btn btn-primary">Order</a>' + '</div>' + '</div>';
-
-productContainer.innerHTML += productHtml;
-});
-}
-
-
-// Sélectionner l'élément input de type range
-const priceRangeInput = document.getElementById('priceRange');
-// Sélectionner les éléments span pour afficher le prix min et le prix max
-const minPriceDisplay = document.getElementById('minPriceDisplay');
-
-
-// Écouter les changements de valeur du curseur
-priceRangeInput.addEventListener('input', function () { // Mettre à jour le texte du prix min et du prix max en fonction de la valeur du curseur
-const minPrice = parseInt(this.value); // Convertir en entier
-minPriceDisplay.textContent = ` ${minPrice} DT`;
-
-});
+			cards.forEach(function(cardproduct) {
+				var productName = cardproduct.dataset.name;
+				if (productName.includes(searchText)) {
+					cardproduct.style.display = 'block';
+				} else {
+					cardproduct.style.display = 'none';
+				}
+			});
+		});
+	
 </script>
+
+<script>
+	document.getElementById('priceRange').addEventListener('input', function () {
+		var minPrice = document.getElementById('priceRange').value;
+		var maxPrice = {{ maxPrice }}; 
+		var url = "{{ path('product_filter') }}" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
+
+		fetch(url)
+			.then(response => response.json())
+			.then(data => updateProductView(data.produits))
+			.catch(error => console.error('Error fetching product list:', error));
+	});
+
+	function updateProductView(produits) {
+		var productContainer = document.getElementById('productContainer');
+		productContainer.innerHTML = '';
+
+		produits.forEach(function (pro) {
+			var productHtml = '<div class="col-md-6 mb-4">' +
+				'<div class="trend_2im clearfix position-relative">' +
+				'<div class="trend_2im1 clearfix">' +
+				'<div class="grid">' +
+				'<figure class="effect-jazz mb-0">' +
+				'<a href="#"><img src="' + pro.image + '" height="200" width="320"></a>' +
+				'</figure>' +
+				'</div>' +
+				'</div>' +
+				'</div>' +
+				'<div class="trend_2ilast bg_grey p-3 clearfix" style="height: 250px">' +
+				'<h5><a class="col_red" href="#">' + pro.nom + '</a></h5>' +
+				'<p class=" " style=" font-size: 15px;font-family: Arial, sans-serif;word-wrap: break-word;overflow: hidden;text-overflow: ellipsis; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">' + pro.description + '</p>' +
+				'<span class="col_red"><p class="">' + pro.prix + ' DT</p></span>' +
+				'<a href="#" class="btn btn-primary">Order</a>' +
+				'</div>' +
+				'</div>';
+
+			productContainer.innerHTML += productHtml;
+		});
+	}
+</script>
+
+
 
 
 

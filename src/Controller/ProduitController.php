@@ -44,18 +44,18 @@ class ProduitController extends AbstractController
     #[Route('/listeproduit', name: 'app_produit_liste', methods: ['GET'])]
     public function liste(ProduitRepository $produitRepository, Request $request): Response
     {
-        // Récupérer tous les produits
-        $produit = $produitRepository->findAll();
+       // Récupérer tous les produits
+       $produit = $produitRepository->findAll();
 
-        // Initialiser une variable pour stocker le prix maximal
-        $maxPrice = 0;
+       // Initialiser une variable pour stocker le prix maximal
+       $maxPrice = 0;
 
-        // Parcourir tous les produits et trouver le prix maximal
-        foreach ($produit as $pro) {
-            $prix = $pro->getPrix();
-            if ($prix > $maxPrice) {
-                $maxPrice = $prix;
-            }
+       // Parcourir tous les produits et trouver le prix maximal
+       foreach ($produit as $pro) {
+           $prix = $pro->getPrix();
+           if ($prix > $maxPrice) {
+               $maxPrice = $prix;
+           }
         }
 
 
@@ -71,22 +71,14 @@ class ProduitController extends AbstractController
                 $nombreProduitsParCategorie[$categorie]++;
             }
         }
-
-        if ($request->query->has('minPrice') && $request->query->has('maxPrice')) {
-            $minPrice = $request->query->get('minPrice', 0); // Valeur par défaut de 0 si non spécifiée
-            $max = $request->query->get('maxPrice', $maxPrice); // Valeur maximale par défaut
-
-            // Récupérer les produits en fonction des valeurs de prix min et max
-            $produit = $produitRepository->findByPriceRange($minPrice, $max);
-
-            // Si la requête est une requête AJAX, renvoyer les produits au format JSON
-            return new JsonResponse(['produits' => $produit, 'maxPrice' => $max]);
-        }
+    
 
         return $this->render('produit/about.html.twig', [
-            'produit' => $produit, // Passer les produits à la vue
-            'nombreProduitsParCategorie' => $nombreProduitsParCategorie, // Passer le nombre de produits par catégorie à la vue
-            'maxPrice' => $maxPrice, // Passer le prix maximal à la vue
+            'produit' => $produit, 
+            'nombreProduitsParCategorie' => $nombreProduitsParCategorie,
+             
+           
+            'maxPrice' => $maxPrice,
         ]);
     }
 
@@ -192,7 +184,7 @@ class ProduitController extends AbstractController
             $imageFile = $updateform->get('image')->getData();
             if ($imageFile) {
 
-                // Ceci est nécessaire pour générer un nom de fichier unique basé sur le nom de fichier original.
+                
                 $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
 
@@ -236,8 +228,44 @@ class ProduitController extends AbstractController
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
 
+     /**
+     * @Route("/product/filter", name="product_filter", methods={"GET"})
+     */
+    public function filterProducts(Request $request, ProduitRepository $produitRepository): JsonResponse
+    {
+       
+        $minPrice = $request->query->get('minPrice');
+        $maxPrice = $request->query->get('maxPrice');
 
+        
+        $filteredProducts = $produitRepository->findByPriceRange($minPrice, $maxPrice);
 
+        
+        $formattedProducts = [];
+
+        
+        foreach ($filteredProducts as $produit) {
+            
+            $imagePath = $this->getParameter('APP_IMAGE_DIRECTORY') . '/' . $produit->getImage();
+
+           
+            $formattedProducts[] = [
+                'nom' => $produit->getNom(),
+                'prix' => $produit->getPrix(),
+                'description' => $produit->getDescription(),
+                'image' => $imagePath, 
+            ];
+        }
+
+        
+        return $this->json(['produits' => $formattedProducts]);
+    }
 
 
 }
+
+
+
+
+
+
