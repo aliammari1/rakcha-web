@@ -70,7 +70,7 @@
         {{ block("header") }}
 
         <div class="container mt-5">
-            <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Événements</h1>
+            <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Events</h1>
 
            
         <form action="{{ path('app_evenement_index') }}" method="get" class="mb-4">
@@ -115,11 +115,11 @@
                                 <img class="img-fluid" src="{{ evenement.afficheEvent }}" alt="{{ evenement.nom }}">
                             </a>
                             <div class="card-text-content">
-                                <p><strong>Nom event:</strong> {{ evenement.nom }}</p>
+                                <p><strong>Event Name :</strong> {{ evenement.nom }}</p>
                                 <div class="event-details">
-                                   
-                                    <p><strong>Lieu:</strong> {{ evenement.lieu ? evenement.lieu : 'Non spécifié' }}</p>
-                                    <p><strong>Catégorie:</strong> {{ evenement.idCategorie.nomCategorie ? evenement.idCategorie.nomCategorie : 'Non spécifié' }}</p>
+                                   <p><strong>Category :</strong> {{ evenement.idCategorie.nomCategorie ? evenement.idCategorie.nomCategorie : 'Non spécifié' }}</p>
+                                    <p><strong>Status :</strong> {{ evenement.etat ? evenement.etat : 'Non spécifié' }}</p>
+                                    
                                 </div>
                             </div>
                            
@@ -127,7 +127,7 @@
                     </div>
                 {% else %}
                     <div class="col">
-                        <p>Aucun événement trouvé</p>
+                        <p>No events found !</p>
                     </div>
                 {% endfor %}
             </div>

@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Evenement Details</h1>
+        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Event Details</h1>
 
         <div class="card shadow-lg border-primary">
             <div class="card-body">
@@ -48,7 +48,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="{{ path('app_evenement_index') }}" class="btn btn-outline-secondary">
+            <a href="{{ path('app_evenement_affichback') }}" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left mr-2"></i>Back to List
             </a>
             <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-outline-success ml-2">

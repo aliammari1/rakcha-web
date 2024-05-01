@@ -70,20 +70,20 @@ class Evenement
 
     /**
      * @var string
-      * @Assert\NotBlank(message="Le description ne peut pas être vide")
+      * @Assert\NotBlank(message="La description ne peut pas être vide")
      * @Assert\Length(max=500, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
      * @ORM\Column(name="description", type="string", length=500, nullable=false)
       * @Assert\Regex(
  *     pattern="/^[a-zA-Z]+$/",
- *     message="Le description ne peut contenir que des lettres"
+ *     message="La description ne peut contenir que des lettres"
  * )
      */
     private $description;
 
     /**
      * @var string
-      * @Assert\NotBlank(message="Le affiche event ne peut pas être vide")
-     * @Assert\Length(max=10, maxMessage="Le nom ne peut pas dépasser {{ limit }} caractères")
+      * @Assert\NotBlank(message="Affiche event ne peut pas être vide")
+     * @Assert\Length(max=500, maxMessage="Le lien ne peut pas dépasser {{ limit }} caractères")
      * @ORM\Column(name="affiche_event", type="string", length=255, nullable=false)
      */
     private $afficheEvent;

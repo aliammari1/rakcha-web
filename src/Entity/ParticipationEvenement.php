@@ -45,5 +45,86 @@ class ParticipationEvenement
      */
     private $idEvenement;
 
+    /**
+     * Get the value of idParticipation
+     *
+     * @return int
+     */
+    public function getIdParticipation(): ?int
+    {
+        return $this->IdParticipation;
+    }
+
+
+    /**
+     * Get the value of idEvenement
+     *
+     * @return \Evenement
+     */
+    public function getIdEvenement(): ?Evenement
+    {
+        return $this->idEvenement;
+    }
+
+
+    /**
+     * Set the value of idEvenement
+     *
+     * @param \Evenement $idEvenement
+     * @return self
+     */
+    public function setIdEvenement(?Evenement $idEvenement): self
+    {
+        $this->idEvenement = $idEvenement;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idUser
+     *
+     * @return int
+     */
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    /**
+     * Set the value of idUser
+     *
+     * @param int $idUser
+     * @return self
+     */
+    public function setidUser(int $idUser): self
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of quantity
+     *
+     * @return int
+     */
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * Set the value of quantity
+     *
+     * @param int $description
+     * @return self
+     */
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
 
 }

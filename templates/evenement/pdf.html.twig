@@ -23,7 +23,7 @@
             left: 0cm;
             right: 0cm;
             height: 3cm;
-            background-color: #007BFF;
+            background-color: #AF2E3D;
             color: #ffffff;
             padding: 10px;
             text-align: center;
@@ -35,7 +35,7 @@
             left: 0cm;
             right: 0cm;
             height: 2cm;
-            background-color: #007BFF;
+            background-color: #AF2E3D;
             color: #ffffff;
             padding: 10px;
             text-align: center;
@@ -49,6 +49,7 @@
         
         .event-details {
             margin-bottom: 20px;
+            margin-left: 30px;
         }
         
         .event-details b {
@@ -63,39 +64,40 @@
         }
         
         .container {
-            padding: 20px;
+            padding: 15px;
         }
         
         .footer-text {
             font-size: 14px;
         }
+        .category {
+    margin-left: 5px; /* Adjust this value as needed */
+        }
     </style>
 </head>
 <body>
 <header>
-    <h2><i class="fas fa-info-circle"></i> Pour plus d'informations:</h2>
-    <p><i class="fas fa-map-marker-alt"></i> Adresse : Esprit Technopole Ghazela Ariana</p>
-    <p><i class="fas fa-phone-alt"></i> Numéro : +216 213 123</p>
-    <p><i class="fas fa-envelope"></i> E-mail : event@gmail.com</p>
+    <h2><i class="fas fa-info-circle"></i> Pour plus d'informations :</h2>
+    <p><i class="fas fa-envelope"></i> E-mail : Rakcha.event@gmail.com</p>
 </header>
 
 <footer>
-    <p class="footer-text">© {{ "now"|date("Y") }} Raksha. Tous droits réservés.</p>
+    <p class="footer-text">© {{ "now"|date("Y") }} RAKCHA. Tous droits réservés.</p>
 </footer>
 
 <div class="container">
     <div class="section-title">
-        <h1><i class="fas fa-calendar-alt"></i> Détail de votre événement</h1>
+        <h1><i class="fas fa-calendar-alt"></i> Détails de l'événement</h1>
     </div>
     <div class="event-details">
-        <b><i class="fas fa-tag"></i> Nom de l'événement:</b> <span>{{ evenement.nom }}</span><br>
-        <b><i class="fas fa-calendar-day"></i> Date Début:</b> <span>{{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : 'Non défini' }}</span><br>
-        <b><i class="fas fa-calendar-times"></i> Date Fin:</b> <span>{{ evenement.datefin ? evenement.datefin|date('Y-m-d') : 'Non défini' }}</span><br>
-        <b><i class="fas fa-map-marked-alt"></i> Lieu:</b> <span>{{ evenement.lieu }}</span><br>
-        <b><i class="fas fa-info"></i> État:</b> <span>{{ evenement.etat }}</span><br>
-        <b><i class="fas fa-align-left"></i> Description:</b> <span>{{ evenement.description }}</span><br>
-        <b><i class="fas fa-image"></i> Affiche Event:</b> <span>{{ evenement.afficheEvent }}</span><br>
-        <b><i class="fas fa-tags"></i> Catégorie:</b> <span>{{ evenement.idCategorie ? evenement.idCategorie.nomCategorie : 'N/A' }}</span><br>
+        <b><i class="fas fa-tag"></i>Nom de l'événement :</b> <span>{{ evenement.nom }}</span><br>
+         <b><i class="fas fa-tags"></i> Catégorie :</b> <span>{{ evenement.idCategorie ? evenement.idCategorie.nomCategorie : 'N/A' }}</span><br>
+        <b><i class="fas fa-calendar-day"></i> Date Début :</b> <span>{{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : 'Non défini' }}</span><br>
+        <b><i class="fas fa-calendar-times"></i> Date Fin :</b> <span>{{ evenement.datefin ? evenement.datefin|date('Y-m-d') : 'Non défini' }}</span><br>
+        <b><i class="fas fa-map-marked-alt"></i> Lieu :</b> <span>{{ evenement.lieu }}</span><br>
+        <b><i class="fas fa-info"></i> État :</b> <span>{{ evenement.etat }}</span><br>
+        <b><i class="fas fa-align-left"></i> Description :</b> <span>{{ evenement.description }}</span><br>
+        <b><i class="fas fa-image"></i> Affiche Event :</b> <img src="{{ evenement.afficheEvent }}" style="max-width: 80%;"><br>
     </div>
     <div style="text-align: right; font-size: 15px;"><i class="fas fa-clock"></i> Date de création : {{ "now"|date("d/m/Y") }}</div>
 </div>

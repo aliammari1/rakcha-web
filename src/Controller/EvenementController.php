@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\Evenement;
 use App\Form\EvenementType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,12 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Twilio\Rest\Client;
+
 #[Route('/evenement')]
 class EvenementController extends AbstractController
 {
     #[Route('/', name: 'app_evenement_index', methods: ['GET'])]
 public function index(Request $request, EntityManagerInterface $entityManager): Response
-{
+{   
+    
     $searchTerm = $request->query->get('search');
     $sortBy = $request->query->get('sort_by', 'nom'); // Default sort by 'nom'
     $sortOrder = $request->query->get('sort_order', 'asc'); // Default sort order 'asc'
@@ -82,13 +86,28 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
         $entityManager->persist($evenement);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_evenement_index');
+        return $this->redirectToRoute('app_evenement_affichback');
     }
 
     return $this->render('evenement/new.html.twig', [
         'evenement' => $evenement,
         'form' => $form->createView(),
     ]);
+
+    $sid    = "ACbdf5d6feda24bb559b232d801c631a65";
+    $token  = "42c6d9e04357c619befa9276eb2c3eb7";
+    $twilio = new Client($sid, $token);
+
+    $message = $twilio->messages
+      ->create("+21622757828", // to
+        array(
+          "from" => "+14422540252",
+          "body" => "New Event has been added !"
+        )
+      );
+
+print($message->sid);
+    
 }
 
 
@@ -109,7 +128,7 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_evenement_affichback', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('evenement/edit.html.twig', [
@@ -132,7 +151,7 @@ public function index(Request $request, EntityManagerInterface $entityManager): 
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_evenement_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_evenement_affichback', [], Response::HTTP_SEE_OTHER);
     }
 
  #[Route('/{id}/pdf', name: 'app_evenement_pdf', methods: ['GET'])]
@@ -183,5 +202,5 @@ public function trimultifunction(Request $request): Response
     return new Response($trimmedInput);
 }
 
-
+  
 }

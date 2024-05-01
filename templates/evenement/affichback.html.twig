@@ -12,7 +12,7 @@
 
     <div class="container mt-5 " style="overflow-x: scroll !important;">
 
-        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Evenement </h1>
+        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Events </h1>
 
         <!-- Sort Form -->
         <form action="{{ path('app_evenement_affichback') }}" method="get" class="mb-4">
@@ -56,13 +56,13 @@
                             <i class="fas fa-id-card-alt"></i> {{ evenement.nom }}
                         </div>
                         <div style="color:black !important;" class="card-body ">
-                            <p style="color:black !important;"><strong>Date Debut:</strong> {{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : '' }}</p>
-                            <p style="color:black !important;"><strong>Date Fin:</strong> {{ evenement.datefin ? evenement.datefin|date('Y-m-d') : '' }}</p>
-                            <p style="color:black !important;"><strong>Lieu:</strong> {{ evenement.lieu }}</p>
-                            <p style="color:black !important;"><strong>Etat:</strong> {{ evenement.etat }}</p>
-                            <p style="color:black !important;"><strong>Description:</strong> {{ evenement.description }}</p>
-                            <p style="color:black !important;"><strong>Affiche Event:</strong><a  href="{{ path('app_evenement_show', {'id': evenement.id}) }}"><img width="50" height="50" src="{{ evenement.afficheEvent}}"></a></p>
-                            <p style="color:black !important;"><strong>Categorie:</strong> {{ evenement.idCategorie.nomCategorie }}</p>
+                            <p style="color:black !important;"><strong>Category:</strong> {{ evenement.idCategorie.nomCategorie }}</p>
+                            <p style="color:black !important;"><strong>Start Date :</strong> {{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : '' }}</p>
+                            <p style="color:black !important;"><strong>End Date :</strong> {{ evenement.datefin ? evenement.datefin|date('Y-m-d') : '' }}</p>
+                            <p style="color:black !important;"><strong>Location :</strong> {{ evenement.lieu }}</p>
+                            <p style="color:black !important;"><strong>Status :</strong> {{ evenement.etat }}</p>
+                            <p style="color:black !important;"><strong>Description :</strong> {{ evenement.description }}</p>
+                            <p style="color:black !important;"><strong style="margin-right: 10px;">Poster :</strong><a  href="{{ path('app_evenement_show', {'id': evenement.id}) }}"><img width="70" height="70" src="{{ evenement.afficheEvent}}"></a></p>
                         </div>
                         <div class="card-footer">
                             <a href="{{ path('app_evenement_showback', {'id': evenement.id}) }}" class="btn btn-info btn-sm">

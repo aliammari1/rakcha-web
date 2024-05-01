@@ -53,7 +53,7 @@
         }
 
         .event-title {
-            font-size: 1.2em;
+            font-size: 1.6em;
             margin-bottom: 5px;
         }
 
@@ -74,23 +74,24 @@
         {{ block("header") }}
 
         <div class="container mt-5">
-            <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Événement Details</h1>
+            <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Event Details</h1>
 
             <div class="card shadow-lg border-primary event-details-card">
                 <img class="card-img-top" src="{{ evenement.afficheEvent }}" alt="{{ evenement.nom }}">
                 <div class="card-text-content">
                     <h5 class="event-title">{{ evenement.nom }}</h5>
                     <div class="event-details">
-                        <p><strong>ID:</strong> {{ evenement.id }}</p>
-                        <p><strong>Date Début:</strong> {{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : 'Non spécifié' }}</p>
-                        <p><strong>Date Fin:</strong> {{ evenement.datefin ? evenement.datefin|date('Y-m-d') : 'Non spécifié' }}</p>
-                        <p><strong>Lieu:</strong> {{ evenement.lieu ? evenement.lieu : 'Non spécifié' }}</p>
-                    
-                        <p><strong>Description:</strong> {{ evenement.description ? evenement.description : 'Non spécifié' }}</p>
+                        <p><strong>Category :</strong> {{evenement.idCategorie ? evenement.idCategorie.nomCategorie : 'Non spécifié' }}</p>
+                        <p><strong>Start Date :</strong> {{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : 'Non spécifié' }}</p>
+                        <p><strong>End Date :</strong> {{ evenement.datefin ? evenement.datefin|date('Y-m-d') : 'Non spécifié' }}</p>
+                        <p><strong>Location :</strong> {{ evenement.lieu ? evenement.lieu : 'Non spécifié' }}</p>
+                        <p><strong>Status :</strong> {{ evenement.etat ? evenement.etat : 'Non spécifié' }}</p>
+                        <p><strong>Description :</strong> {{ evenement.description ? evenement.description : 'Non spécifié' }}</p>
                     </div>
                 </div>
                
             </div>
+           
         </div>
     </body>
 {% endblock %}
