@@ -17,6 +17,9 @@ class Episodes
     private int $idepisode;
 
     #[ORM\Column(name: 'titre', type: 'string', length: 30, nullable: false)]
+    #[Assert\NotBlank(message: 'The Title cannot be blank')]
+    #[Assert\NotNull(message: 'The Title cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The title must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
     private string $titre;
 
     #[ORM\Column(name: 'numeroepisode', type: 'integer', nullable: false)]

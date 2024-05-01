@@ -45,4 +45,22 @@ class CategoriesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+// Dans votre méthode ou service
+public function getComedyCategoryId(EntityManagerInterface $entityManager): ?int
+{
+    // Récupérer la catégorie "Comedy" depuis la base de données
+    $comedyCategory = $entityManager->getRepository(Categories::class)->findOneBy(['nom' => 'Comedy']);
+
+    // Vérifier si la catégorie existe
+    if ($comedyCategory) {
+        // Retourner l'ID de la catégorie "Comedy"
+        return $comedyCategory->getId();
+    }
+
+    return null;
+}
+
+
+
 }

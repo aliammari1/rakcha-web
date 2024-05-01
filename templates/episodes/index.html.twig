@@ -13,7 +13,8 @@
                 <th>Numeroepisode</th>
                 <th>Saison</th>
                 <th>Image</th>
-                <th>Video</th>
+                <th>Videos</th>
+                <th>Series</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -25,7 +26,8 @@
                 <td>{{ episode.numeroepisode }}</td>
                 <td>{{ episode.saison }}</td>
                 <td>{{ episode.image }}</td>
-                <td>{{ episode.video }}</td>
+                 <td>{{ episode.video }}</td>
+                <td>{{ episode.idserie.nom }}</td>
                 <td>
                     <a href="{{ path('app_episodes_show', {'idepisode': episode.idepisode}) }}">show</a>
                     <a href="{{ path('app_episodes_edit', {'idepisode': episode.idepisode}) }}">edit</a>

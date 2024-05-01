@@ -89,5 +89,33 @@ class Feedback
         return $this;
     }
 
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->date = new \DateTime();
+    }
+
+
+
+
+
+    public function getSentiment(): ?string
+    {
+        return $this->sentiment;
+    }
+
+    public function setSentiment(string $sentiment): static
+    {
+        $this->sentiment = $sentiment;
+
+        return $this;
+    }
+
+ 
+    
+
 
 }
+
+
+

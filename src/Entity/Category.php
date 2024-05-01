@@ -52,6 +52,8 @@ class Category
 
         return $this;
     }
-
-
+    public function __toString(): string
+    {
+        return $this->nom; // Remplacez "nom" par le nom de l'attribut qui contient le nom de la catégorie
+    }
 }

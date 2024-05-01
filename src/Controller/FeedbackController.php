@@ -74,8 +74,43 @@ class FeedbackController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$feedback->getId(), $request->request->get('_token'))) {
             $entityManager->remove($feedback);
             $entityManager->flush();
-        }
+            // Rediriger vers la même page pour rafraîchir la liste des feedbacks
+        return $this->redirectToRoute('app_feedback_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+        
 
         return $this->redirectToRoute('app_feedback_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    
+    #[Route('/episode/{id}/feedback', name:'episode_feedback')]
+    
+    public function addFeedback(Request $request, $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $episode = $entityManager->getRepository(Episodes::class)->find($id);
+
+        $feedback = new Feedback();
+        $feedback->setEpisode($episode);
+
+        $form = $this->createForm(FeedbackType::class, $feedback);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($feedback);
+            $entityManager->flush();
+
+            // Envoyer un email à l'administrateur
+            // Vous pouvez utiliser le service Symfony pour envoyer un email
+            // Consultez la documentation officielle pour plus de détails sur l'envoi d'email
+
+            return $this->redirectToRoute('app_episodes_show', ['id' => $id]);
+        }
+               
+        return $this->render('front/watchepisode', [
+            'form' => $form->createView(),
+            'episode' => $episode,
+        ]);
     }
 }
